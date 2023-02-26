@@ -5,9 +5,9 @@ $password = "123";
 $database = "AdventureWorks";
 
 try {
-    $conn = new PDO("sqlsrv:Server=$server;Database=$database", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Conexión exitosa";
+    $pdo = new PDO("sqlsrv:Server=$server;Database=$database", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //echo "Conexión exitosa";
 } catch (PDOException $e) {
     echo "Error de conexión: " . $e->getMessage();
 }
