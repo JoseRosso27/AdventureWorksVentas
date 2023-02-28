@@ -10,27 +10,27 @@ $url = "/adventureworksventas";
 if (isset($_POST["delete"])) {
     try {
 		$pdo->beginTransaction();
-		$sql = "DELETE FROM [user] WHERE username=:id";
+		$sql = "DELETE FROM production.productinventory WHERE ProductID=:pid and LocationID=:lid and Shelf=:s";
 		$stmt = $pdo->prepare($sql);
-        $stmt->execute(array(':id'=>$_GET['id']));
+        $stmt->execute(array(':pid'=>$_GET['id'],':lid'=>$_GET['location_id'],':s'=>$_GET['shelf_id']));
 		$pdo->commit();
     } catch (Exception $e) {
 		$pdo->rollBack();
         $_SESSION["delete_error"]="Error al eliminar el producto del inventario".$e;
-        header("Location: read_user.php");
+        header("Location: read_inventory.php");
         return;
     }
     $_SESSION["delete_successful"]="El registro se elimino exitosamente";
-    header("Location: read_user.php");
+    header("Location: read_inventory.php");
     return;
 }
-$sql = "SELECT * FROM [user] WHERE username=:id";
+$sql = "SELECT * FROM production.productinventory pi where pi.ProductID=:pid and pi.LocationID=:lid and pi.Shelf=:s";
 $stmt = $pdo->prepare($sql);
-$stmt->execute(array(':id'=>$_GET['id']));
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-if ($user==false) {
+$stmt->execute(array(':pid'=>$_GET['id'],':lid'=>$_GET['location_id'],':s'=>$_GET['shelf_id']));
+$inventory = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($inventory==false) {
     $_SESSION["edit_error"] = "Id de url no esta bien";
-    header("Location: $url/crud/inventario/read_user.php");
+    header("Location: $url/crud/inventario/read_inventory.php");
     exit;
 }
 
@@ -66,7 +66,7 @@ if ($user==false) {
 			<main>
 				<form method="post">
                     <div class="mb-4 text-center">
-                        <h2>¿Esta seguro de eliminar el usuario <?=$user["username"]?>?</h2>
+                        <h2>¿Esta seguro de realizar la accion?</h2>
 					</div>
 					<div class="mb-4 text-center text-danger">
                         <h6>
@@ -77,7 +77,7 @@ if ($user==false) {
 						</h6>
 					</div>
 					<button type="submit" class="w-100 btn btn-danger mb-3" name="delete" value="delete">Confirmar</button>
-					<a class="w-100 btn btn-secondary" href="read_user.php">Cancelar</a>
+					<a class="w-100 btn btn-secondary" href="read_inventory.php">Cancelar</a>
 				</form>
 			</main>
 		</div>
